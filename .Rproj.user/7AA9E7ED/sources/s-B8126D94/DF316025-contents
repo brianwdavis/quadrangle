@@ -1,3 +1,0 @@
-useDynLib(quadrangle, .registration=TRUE)
-exportPattern("^[[:alpha:]]+$")
-importFrom(Rcpp, evalCpp)
