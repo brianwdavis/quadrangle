@@ -1,0 +1,22 @@
+Package: quadrangle
+Type: Package
+Title: Wrangle QR codes out of images
+Version: 0.9
+Date: 2019-09-16
+Author: Brian W. Davis
+Authors@R: c(
+  person("Brian", "Davis", email = "brianwdavis@gmail.com", role = c("aut", "cre")),
+  person("Cosmo", "Wolfe", role = "ctb", comment = "jsQR"),
+  person("Daniel", "Beer", role = "ctb", comment = "quirc")
+  )
+Maintainer: Brian W. Davis <brianwdavis@gmail.com>
+URL: https://github.com/brianwdavis/quadrangle
+BugReports: https://github.com/brianwdavis/quadrangle/issues
+Description: Reads QR (Quick Response) codes from images. Uses `Rcpp` and `V8` 
+    to drive two engines, `quirc` (for fast location) and `jsQR` (for robust 
+    decoding). Designed for, but not restricted to, image wrangling using `magick`.
+License: GPL (>= 3)
+Imports: Rcpp (>= 1.0.0), V8, purrr, dplyr, jsonlite, magick, glue
+Suggests: ggplot2
+LinkingTo: Rcpp
+RoxygenNote: 6.1.1

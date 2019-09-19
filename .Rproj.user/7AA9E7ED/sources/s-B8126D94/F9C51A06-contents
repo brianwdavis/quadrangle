@@ -1,0 +1,86 @@
+# Add a white margin to the QR code
+marginizer <- function(mat, n = 1) {
+  tb <- matrix(0, nrow = n,               ncol = ncol(mat))
+  lr <- matrix(0, nrow = nrow(mat) + 2*n, ncol = n        )
+  
+  cbind(lr, rbind(tb, mat, tb), lr)
+}
+
+# Flip matrices L-R
+flipper <- function(mat) {
+  mat[nrow(mat):1, ]
+}
+
+
+
+qr_make_test <- function(string) {
+  mat <- qrencoder::qrencode_raw(string)
+  qr <- 1-flipper(marginizer(mat))
+  grid::grid.newpage()
+  png(filename = glue::glue("inst/{string}.png"))
+  grid::grid.draw(grid::rasterGrob(qr, interpolate = F))
+  dev.off()
+}
+
+qr_make_test("This is a test")
+qr_make_test("to detect multiple QR codes")
+qr_make_test("in a single image")
+
+
+image_read("C:/Users/Brian.Davis/Google Drive/Workstation/Dropbox/R/imgqr/multiple_original.jpg") %>%
+  image_resize("50%") %>% 
+  image_write("multiple_original.png")
+
+mult_cpp <- 
+  image_read("multiple_original.png") %>%
+  qr_scan(flop = F, no_js = T, plot = T)
+
+
+ggplot2::ggsave("multiple_decoded.png", width = 0.5*4032/300, height = 0.5*3024/300)
+
+
+mult_js <- 
+  image_read("C:/Users/Brian.Davis/Google Drive/Workstation/Dropbox/R/imgqr/multiple_original.jpg") %>% 
+  qr_scan(flop = F, force_js = T, plot = T)
+
+# TODO a data-pixel-only version without magick
+
+test_matrix <- qrencoder::qrencode(
+  "data arrays don't have to be pixels directly from image files"
+  )
+
+matrix_enlargener <- function(mat, n) {
+  nc <- n*ncol(mat)
+  nr <- n*nrow(mat)
+  
+  n_wide <- matrix(rep(mat, each = n), ncol = nc, byrow = T)
+  n_tall <- matrix(rep(n_wide, each = n), nrow = nr, byrow = F)
+  
+  n_tall
+}
+
+matrix_enlargener(diag(3), 3)
+
+test_matrix_thicker <- 1 - marginizer(test_matrix, 5)
+
+array(
+  255*rep(test_matrix_thicker, each = 4), 
+  dim = c(4, ncol(test_matrix_thicker), nrow(test_matrix_thicker))
+  ) %>% 
+  qr_scan_js_array()
+
+rcpp_qr_scan_array(
+  as.vector(255*test_matrix_thicker), 
+  ncol(test_matrix_thicker), 
+  nrow(test_matrix_thicker)
+  )
+
+grid::grid.draw(grid::rasterGrob(test_matrix_thicker, interpolate = F))
+image_raster(test_matrix_thicker)
+raster::raster(test_matrix_thicker)
+test_png <- png::readPNG("C:/Users/Brian.Davis/Google Drive/Workstation/Dropbox/R/imgqr/qr4.png")
+rcpp_qr_scan_array(
+  255*as.vector(test_png[,,1]),
+  dim(test_png)[1],
+  dim(test_png)[2],
+)

@@ -1,0 +1,11 @@
+{
+    "args" : [
+        "-IC:/Users/Brian.Davis/Documents/RStudio/resources/libclang/builtin-headers/3.4",
+        "-IC:/Users/Brian.Davis/Documents/R/R-3.5.0/library/Rcpp/include",
+        "-IC:/Users/BRIAN~1.DAV/DOCUME~1/R/R-35~1.0/include",
+        "-DNDEBUG"
+    ],
+    "hash" : "1568679181",
+    "is_cpp" : true,
+    "pch" : "Rcpp"
+}
