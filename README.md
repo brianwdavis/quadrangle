@@ -3,6 +3,7 @@ R package. Wrangles QR codes from images, using Rcpp and V8.
 
 Wraps [dlbeer/quirc (C++)](https://github.com/dlbeer/quirc) and [cozmo/jsqr (JS)](https://github.com/cozmo/jsqr).
 
+To write QR codes, there are many online generators. Within R, there is [hrbrmstr/qrencoder](https://github.com/hrbrmstr/qrencoder).
 
 
 ## Installation:
@@ -77,3 +78,47 @@ image_read("multiple_original.png") %>%
 
 ![annotated image with 3 QR codes of varying size and orientation](inst/multiple_decoded.png)
 
+## Image generation
+
+The origin of this package was a research project where the collection method was taking RGB images with a consumer point-and-shoot camera, and then using the metadata encoded in QR codes to identify samples to record in a database. To generate your own QR codes to use in images, try plotting with base or grid graphics.
+
+
+```r
+devtools::install_github("hrbrmstr/qrencoder")
+# also on CRAN, `install.packages("qrencoder")`
+
+png("generation_original.png")
+image(
+  1 - qrencoder::qrencode("Generated with hrbrmstr/qrencoder"), 
+  asp = 1, xlim = c(-0.5, 1.5), ylim = c(-0.5, 1.5),
+  col = c("black", "white")
+  )
+dev.off()
+```
+
+![image of a base R graph with a QR matrix](inst/generation_original.png)
+
+```r
+qr_scan("generation_original.png", flop = F, plot = T)
+
+> $`values`
+>   id type                             value
+> 1  1 byte Generated with hrbrmstr/qrencoder
+> 
+> $points
+> # A tibble: 8 x 4
+>   id    corner                          x     y
+>   <chr> <chr>                       <dbl> <dbl>
+> 1 1     topRightCorner               164.  142.
+> 2 1     topLeftCorner                164.  322.
+> 3 1     bottomRightCorner            344.  143.
+> 4 1     bottomLeftCorner             344.  322.
+> 5 1     topRightFinderPattern        186.  164 
+> 6 1     topLeftFinderPattern         186.  300.
+> 7 1     bottomLeftFinderPattern      322   300.
+> 8 1     bottomRightAlignmentPattern  304.  183 
+```
+
+![annotated image of a base R graph with a QR matrix](inst/generation_decoded.png)
+
+In addition to the method above, `grid::rasterGrob(<qr_matrix>, interpolate = F)` can be useful for arranging additional text on a page, so that you can include human-readable metadata as well. Note that depending on the graphics method you use to render the QR code, the matrix may be flipped or color-inverted. I recommend running a test under the lighting conditions you expect "in the wild" before you deploy a lot of them.
