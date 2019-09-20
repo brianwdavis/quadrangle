@@ -1,13 +1,14 @@
 # quadrangle
 R package. Wrangles QR codes from images, using Rcpp and V8.
 
-Wraps [dlbeer/quirc](https://github.com/dlbeer/quirc) and [cozmo/jsqr](https://github.com/cozmo/jsqr).
+Wraps [dlbeer/quirc (C++)](https://github.com/dlbeer/quirc) and [cozmo/jsqr (JS)](https://github.com/cozmo/jsqr).
 
 
 
 ## Installation:
 ```r
 devtools::install_github("brianwdavis/quadrangle", INSTALL_opts = "--no-multiarch")
+# You may not need `INSTALL_opts = "--no-multiarch"` depending on your system.
 ```
 
 ## Basic usage:
@@ -19,7 +20,8 @@ devtools::install_github("brianwdavis/quadrangle", INSTALL_opts = "--no-multiarc
 ```r
 library(quadrangle)
 library(ggplot2)      # required for plotting
-
+# find these test images in the /inst/ directory of the github repo
+# or at system.file("<image file name>", package = "quadrangle")
 
 qr_scan("test_original.jpg", flop = T, force_js = T, plot = T)
 

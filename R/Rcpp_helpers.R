@@ -67,4 +67,3 @@ qr_scan_cpp <- function(image, flop = T, debug = F) {
   codes
 }
 
-
