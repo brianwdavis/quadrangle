@@ -4,21 +4,25 @@
 #' C++ library. You can call this function on file paths, or preprocess files
 #' and call this function on the resulting \code{magick} objects.
 #' 
-# The algorithm used here was originally developed to identify QR codes on
-# white printed sheets in outdoor images, so images are progressively darkened
-# to recover data in overexposed regions. You may need to view the source of
-# this function to get a template for developing your own algorithm in other
-# lighting conditions. For example, \code{\link{image_threshold}} with
-# \code{(..., type = "white")} to lighten dark images, or
-# \code{\link{image_morphology}} with \code{(..., morphology = "Open", kernel =
-# "Square:7")}. A more thoughtful API for developing these algorithms is a work
-# in progress.
+#' This uses a double-\code{while} loop that progressively pushes mid-brightness
+#' pixels to pure black, and if that fails, progressively pushes mid-brightness
+#' pixels to pure white. This algorithm was developed for identifying QR codes
+#' on white printed sheets in outdoor images, in bright sun with or without
+#' shadows. To speed up scanning, you can use arguments \code{lighten = F,
+#' darken = F} which will skip any thresholding.
+#'
+#' To BYO algorithm, you can use this function as a template. For example,
+#' \code{\link{image_morphology}} with \code{(..., morphology = "Open", kernel =
+#' "Square:n")} (varying \code{n} from 2 to 10) may repair corrupted QR blocks.
 #' 
 #' @param image A path to a \code{magick}-readable file, e.g. jpg or png, or a \code{magick} object.
 #' @param flop Logical. Should image be mirrored L-R? Some generators produce QR codes like this.
+#' @param lighten Logical. Should under-exposed areas of the image be lightened to increase contrast? Useful for images in shadow. Default \code{FALSE}.
+#' @param darken Logical. Should over-exposed areas of the image be darkened to increase contrast? Useful for images in bright light. Default \code{TRUE}.
 #' @param debug Logical. Should additional metadata about decoded QR patterns be included? e.g. ECC level, version number, etc.
+#' @param verbose Logical. Should warnings print for potentially slow operations?
 #' @return A list of two dataframes, "values" and "points" describing any found QR codes.
-qr_scan_cpp <- function(image, flop = T, debug = F) {
+qr_scan_cpp <- function(image, flop = T, lighten = F, darken = T, debug = F, verbose = interactive()) {
   if (is.character(image)) {
     mgk <- image_read(image)
   } else if ("magick-image" %in% class(image)) {
@@ -28,8 +32,10 @@ qr_scan_cpp <- function(image, flop = T, debug = F) {
   }
   
   codes <- list(values = data.frame(), points = data.frame())
-  thr <- paste0(c(0,50,60,70,80,90,95), "%")
-  i <- 0
+  thr_w <- paste0(c(100,50,45,40,35,30,25), "%")
+  thr_b <- paste0(c(  0,50,60,70,80,90,95), "%")
+  
+  j <- 0
   candidate_values <- data.frame()
   candidate_points <- data.frame()
   
@@ -37,27 +43,46 @@ qr_scan_cpp <- function(image, flop = T, debug = F) {
     mgk <- image_flop(mgk)
   }
   
-  while (
-    (all(codes$values$value == "") || nrow(codes$values) == 0) & i < length(thr)
-  ) {
-    i <- i + 1
-    
-    arr <- mgk %>% 
-      image_threshold("black", thr[i]) %>%
-      image_data(channels = "gray")
-    
-    codes <- rcpp_qr_scan_array(
-      as.vector(arr, mode = "raw"),
-      dim(arr)[2],
-      dim(arr)[3],
-      debug
+  if (!lighten) thr_w <- thr_w[1]
+  if (!darken) thr_b <- thr_b[1]
+  if (lighten && darken && verbose) {
+    warning(
+      "Cleaning up both over-exposed and under-exposed areas may be slow.",
+      immediate. = T, call. = F
     )
+  }
+  
+  while (
+    (all(codes$values$value == "") || nrow(codes$values) == 0) && j < length(thr_w)
+  ) {
     
-    if (nrow(codes$points) > 0) {
-      candidate_values <- codes$values
-      candidate_points <- codes$points
+    j <- j + 1
+    mgk <- qr_threshold_shortcut_(mgk, "white", thr_w[j])
+    i <- 0
+    
+    while (
+      (all(codes$values$value == "") || nrow(codes$values) == 0) && i < length(thr_b)
+    ) {
+      i <- i + 1
+      
+      arr <- qr_threshold_shortcut_(mgk, "black", thr_b[i]) %>%
+        image_data(channels = "gray")
+      
+      codes <- rcpp_qr_scan_array(
+        as.vector(arr, mode = "raw"),
+        dim(arr)[2],
+        dim(arr)[3],
+        debug
+      )
+      
+      if (nrow(codes$points) > 0) {
+        candidate_values <- codes$values
+        candidate_points <- codes$points
+      }
     }
   }
+  
+  
   
   if (nrow(codes$points) == 0 && nrow(candidate_points) != 0) {
     codes$values <- candidate_values
@@ -67,3 +92,24 @@ qr_scan_cpp <- function(image, flop = T, debug = F) {
   codes
 }
 
+#' (Internal) Image thresholding, with some shortcuts
+#' 
+#' This is an internal function used by \code{\link{qr_scan_js_from_corners}}
+#' and \code{\link{qr_scan_cpp}}. It's a wrapper around \code{\link{image_threshold}}
+#' which skips running the function call if the arguments indicate essentially
+#' unchanged images, such as pushing the blackest 0% of pixels to black, or the
+#' whitest 100% of pixels to white.
+#' 
+#' @keywords internal
+#' 
+#' @param mgk       A magick image object.
+#' @param type      Type of thresholding, either black or white.
+#' @param threshold Pixel intensity threshold.
+#' @param ...       Additional arguments passed through (\code{channels}).
+qr_threshold_shortcut_ <- function(mgk, type, threshold, ...) {
+  if ((type == "black" && threshold == "0%") || (type == "white" && threshold == "100%")) {
+    mgk
+  } else {
+    image_threshold(mgk, type, threshold, ...)
+  }
+}

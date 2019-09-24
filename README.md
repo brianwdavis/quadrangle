@@ -46,7 +46,7 @@ qr_scan("test_original.jpg", flop = T, force_js = T, plot = T)
 
 ![mirrored section of decoded image, with annotations](inst/test_decoded.jpg)
 
-## Multiple codes at once
+## Multiple codes at once:
 
 ![image with 3 QR codes of varying size and orientation](inst/multiple_original.png)
 
@@ -78,7 +78,7 @@ image_read("multiple_original.png") %>%
 
 ![annotated image with 3 QR codes of varying size and orientation](inst/multiple_decoded.png)
 
-## Image generation
+## Image generation:
 
 The origin of this package was a research project where the collection method was taking RGB images with a consumer point-and-shoot camera, and then using the metadata encoded in QR codes to identify samples to record in a database. To generate your own QR codes to use in images, try plotting with base or grid graphics.
 

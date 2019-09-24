@@ -6,25 +6,30 @@
 #' can be read, the image and corners are passed to the JS engine, which is
 #' slower but has a higher success rate on cropped images.
 #'
-#' This function calls \code{\link{qr_scan_cpp}} and
-#' \code{\link{qr_scan_js_from_corners}}, which each have a \code{while} loop
-#' that progressively pushes mid-brightness pixels to pure black. This algorithm
-#' was developed for identifying QR codes on white printed sheets in outdoor
-#' images. To BYO algorithm, you can use those two functions as templates. For
-#' example, \code{\link{image_threshold}} with \code{(..., type = "white")} to
-#' lighten dark images, or \code{\link{image_morphology}} with \code{(...,
-#' morphology = "Open", kernel = "Square:7")}. A more thoughtful API for
-#' developing these algorithms is a work in progress.
+#' This function calls \code{\link{qr_scan_cpp}} and possibly
+#' \code{\link{qr_scan_js_from_corners}}. Each function has a
+#' double-\code{while} loop that progressively pushes mid-brightness pixels to
+#' pure black, and if that fails, progressively pushes mid-brightness pixels to
+#' pure white. This algorithm was developed for identifying QR codes on white
+#' printed sheets in outdoor images, in bright sun with or without shadows. To
+#' speed up scanning, you can use arguments \code{lighten = F, darken = F} which
+#' will skip any thresholding.
 #' 
+#' To BYO algorithm, you can use those two functions as templates. For example,
+#' \code{\link{image_morphology}} with \code{(..., morphology = "Open", kernel =
+#' "Square:n")} (varying \code{n} from 2 to 10) may repair corrupted QR blocks.
 #' 
 #' 
 #' @param image A path to a \code{magick}-readable file, e.g. jpg or png, or a \code{magick} object.
 #' @param flop  Logical. Should the image be mirrored L-R before reading?
+#' @param lighten Logical. Should under-exposed areas of the image be lightened to increase contrast? Useful for images in shadow. Default \code{FALSE}.
+#' @param darken Logical. Should over-exposed areas of the image be darkened to increase contrast? Useful for images in bright light. Default \code{TRUE}.
 #' @param plot  Logical. Should the image with any detected codes be shown after reading? (Requires ggplot2)
 #' @param force_js Logical. Should the JS library run even if the C++ library is able to read the code?
 #' @param no_js Logical. Never use the JS library, even if no QR codes are decoded.
+#' @param verbose Logical. Should warnings print for potentially slow operations?
 #' @return A list of dataframes, \strong{values} and \strong{points}, each with a column \strong{id}. 
-qr_scan <- function(image, flop = T, plot = F, force_js = F, no_js = F) {
+qr_scan <- function(image, flop = T, lighten = F, darken = T, plot = F, force_js = F, no_js = F, verbose = interactive()) {
   if (is.character(image)) {
     mgk <- image_read(image)
   } else if ("magick-image" %in% class(image)) {
@@ -37,7 +42,7 @@ qr_scan <- function(image, flop = T, plot = F, force_js = F, no_js = F) {
     mgk <- image_flop(mgk)
   }
   
-  code_obj <- qr_scan_cpp(mgk, flop = F)
+  code_obj <- qr_scan_cpp(mgk, flop = F, lighten = lighten, darken = darken, verbose = verbose)
   code_pts <- code_obj$points
   
   # TODO image_destroy(mgk)
@@ -46,7 +51,10 @@ qr_scan <- function(image, flop = T, plot = F, force_js = F, no_js = F) {
     if (!no_js) {
       code_list <- split(code_pts, code_pts$id)
       code_obj <- 
-        map(code_list, ~qr_scan_js_from_corners(mgk, .x)) %>% 
+        map(
+          code_list, 
+          ~qr_scan_js_from_corners(mgk, .x, lighten = lighten, darken = darken, verbose = F)
+          ) %>% 
         qr_parse_js()
     }
   } 

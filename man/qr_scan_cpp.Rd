@@ -4,14 +4,21 @@
 \alias{qr_scan_cpp}
 \title{Scan an image file or \code{magick} image object for QR codes with the C++ engine.}
 \usage{
-qr_scan_cpp(image, flop = T, debug = F)
+qr_scan_cpp(image, flop = T, lighten = F, darken = T, debug = F,
+  verbose = interactive())
 }
 \arguments{
 \item{image}{A path to a \code{magick}-readable file, e.g. jpg or png, or a \code{magick} object.}
 
 \item{flop}{Logical. Should image be mirrored L-R? Some generators produce QR codes like this.}
 
+\item{lighten}{Logical. Should under-exposed areas of the image be lightened to increase contrast? Useful for images in shadow. Default \code{FALSE}.}
+
+\item{darken}{Logical. Should over-exposed areas of the image be darkened to increase contrast? Useful for images in bright light. Default \code{TRUE}.}
+
 \item{debug}{Logical. Should additional metadata about decoded QR patterns be included? e.g. ECC level, version number, etc.}
+
+\item{verbose}{Logical. Should warnings print for potentially slow operations?}
 }
 \value{
 A list of two dataframes, "values" and "points" describing any found QR codes.
@@ -20,4 +27,16 @@ A list of two dataframes, "values" and "points" describing any found QR codes.
 This is a wrapper function to call the QR code scanner in the \code{quirc}
 C++ library. You can call this function on file paths, or preprocess files
 and call this function on the resulting \code{magick} objects.
+}
+\details{
+This uses a double-\code{while} loop that progressively pushes mid-brightness
+pixels to pure black, and if that fails, progressively pushes mid-brightness
+pixels to pure white. This algorithm was developed for identifying QR codes
+on white printed sheets in outdoor images, in bright sun with or without
+shadows. To speed up scanning, you can use arguments \code{lighten = F,
+darken = F} which will skip any thresholding.
+
+To BYO algorithm, you can use this function as a template. For example,
+\code{\link{image_morphology}} with \code{(..., morphology = "Open", kernel =
+"Square:n")} (varying \code{n} from 2 to 10) may repair corrupted QR blocks.
 }
