@@ -52,7 +52,7 @@ qr_scan_cpp <- function(image, flop = T, lighten = F, darken = T, debug = F, ver
     )
   }
   
-  pb <- qr_pb_("JS", length(thr_w)*length(thr_b))
+  pb <- qr_pb_("C++", length(thr_w)*length(thr_b))
   
   while (
     (all(codes$values$value == "") || nrow(codes$values) == 0) && j < length(thr_w)
