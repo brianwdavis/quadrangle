@@ -43,6 +43,7 @@ qr_scan_js_from_corners <- function(mgk, code_pts, lighten = F, darken = T, verb
       )
   }
   
+  pb <- qr_pb_("JS", length(thr_w)*length(thr_b))
   
   while (length(codes) == 0 & j < length(thr_w)) {
     j <- j+1
@@ -51,6 +52,7 @@ qr_scan_js_from_corners <- function(mgk, code_pts, lighten = F, darken = T, verb
     
     while (length(codes) == 0 & i < length(thr_b)) {
       i <- i+1
+      pb$tick(tokens = list(l = thr_w[j], d = thr_b[i]))
       
       codes <- qr_threshold_shortcut_(mgk, "black", thr_b[i]) %>% 
         image_data(channels = "rgba") %>% 

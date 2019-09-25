@@ -52,6 +52,8 @@ qr_scan_cpp <- function(image, flop = T, lighten = F, darken = T, debug = F, ver
     )
   }
   
+  pb <- qr_pb_("JS", length(thr_w)*length(thr_b))
+  
   while (
     (all(codes$values$value == "") || nrow(codes$values) == 0) && j < length(thr_w)
   ) {
@@ -64,6 +66,8 @@ qr_scan_cpp <- function(image, flop = T, lighten = F, darken = T, debug = F, ver
       (all(codes$values$value == "") || nrow(codes$values) == 0) && i < length(thr_b)
     ) {
       i <- i + 1
+      pb$tick(tokens = list(l = thr_w[j], d = thr_b[i]))
+      
       
       arr <- qr_threshold_shortcut_(mgk, "black", thr_b[i]) %>%
         image_data(channels = "gray")
@@ -92,24 +96,3 @@ qr_scan_cpp <- function(image, flop = T, lighten = F, darken = T, debug = F, ver
   codes
 }
 
-#' (Internal) Image thresholding, with some shortcuts
-#' 
-#' This is an internal function used by \code{\link{qr_scan_js_from_corners}}
-#' and \code{\link{qr_scan_cpp}}. It's a wrapper around \code{\link{image_threshold}}
-#' which skips running the function call if the arguments indicate essentially
-#' unchanged images, such as pushing the blackest 0\% of pixels to black, or the
-#' whitest 100\% of pixels to white.
-#' 
-#' @keywords internal
-#' 
-#' @param mgk       A magick image object.
-#' @param type      Type of thresholding, either black or white.
-#' @param threshold Pixel intensity threshold.
-#' @param ...       Additional arguments passed through (\code{channels}).
-qr_threshold_shortcut_ <- function(mgk, type, threshold, ...) {
-  if ((type == "black" && threshold == "0%") || (type == "white" && threshold == "100%")) {
-    mgk
-  } else {
-    image_threshold(mgk, type, threshold, ...)
-  }
-}

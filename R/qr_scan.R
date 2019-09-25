@@ -80,7 +80,7 @@ qr_plot <- function(mgk, code_obj) {
     stop("Plotting decoded QR images requires ggplot2.")
   }
   
-  dat <- full_join(code_obj$values, code_obj$points)
+  dat <- full_join(code_obj$values, code_obj$points, by = "id")
   
   # slow to resize large images, but slow to render them as well, how to fix?
   if (image_info(mgk)$width > 1000) {
