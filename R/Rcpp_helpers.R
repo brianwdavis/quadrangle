@@ -97,8 +97,8 @@ qr_scan_cpp <- function(image, flop = T, lighten = F, darken = T, debug = F, ver
 #' This is an internal function used by \code{\link{qr_scan_js_from_corners}}
 #' and \code{\link{qr_scan_cpp}}. It's a wrapper around \code{\link{image_threshold}}
 #' which skips running the function call if the arguments indicate essentially
-#' unchanged images, such as pushing the blackest 0% of pixels to black, or the
-#' whitest 100% of pixels to white.
+#' unchanged images, such as pushing the blackest 0\% of pixels to black, or the
+#' whitest 100\% of pixels to white.
 #' 
 #' @keywords internal
 #' 
