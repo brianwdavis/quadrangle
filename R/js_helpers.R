@@ -15,14 +15,14 @@ qr_v8_init <- function(qr_js_src = qr_js_src_path) {
 
 #' Identify a JS engine and test it.
 #' 
-#' If a V8 engine isn't specified when running \code{\link{qr_scan_js_array}}, this
+#' If a \pkg{V8} engine isn't specified when running \code{\link{qr_scan_js_array}}, this
 #' function will be called to search the global environment. If it finds a V8 
 #' context, it will then test if it contains the \code{jsQR} library and return
 #' it. If not, it will initialize a new one with \code{\link{qr_v8_init}} and return it.
 #' 
 #' @param env Which environment to search for engines? (Usually global.)
 #' @param qr_js_src Path to the \code{jsQR} library source.
-#' @return A prepared V8 context.
+#' @return A prepared \code{\link{v8}} context.
 qr_v8_ls <- function(env = .GlobalEnv, qr_js_src = qr_js_src_path) {
   envs <- ls.str(mode = "environment", envir = env)
   

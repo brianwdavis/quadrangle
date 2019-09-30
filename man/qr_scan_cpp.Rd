@@ -2,13 +2,13 @@
 % Please edit documentation in R/Rcpp_helpers.R
 \name{qr_scan_cpp}
 \alias{qr_scan_cpp}
-\title{Scan an image file or \code{magick} image object for QR codes with the C++ engine.}
+\title{Scan an image file or \pkg{magick} image object for QR codes with the C++ engine.}
 \usage{
 qr_scan_cpp(image, flop = T, lighten = F, darken = T, debug = F,
   verbose = interactive())
 }
 \arguments{
-\item{image}{A path to a \code{magick}-readable file, e.g. jpg or png, or a \code{magick} object.}
+\item{image}{A path to a \pkg{magick}-readable file, e.g. jpg or png, or a \pkg{magick} object.}
 
 \item{flop}{Logical. Should image be mirrored L-R? Some generators produce QR codes like this.}
 
@@ -26,7 +26,7 @@ A list of two dataframes, "values" and "points" describing any found QR codes.
 \description{
 This is a wrapper function to call the QR code scanner in the \code{quirc}
 C++ library. You can call this function on file paths, or preprocess files
-and call this function on the resulting \code{magick} objects.
+and call this function on the resulting \pkg{magick} objects.
 }
 \details{
 This uses a double-\code{while} loop that progressively pushes mid-brightness

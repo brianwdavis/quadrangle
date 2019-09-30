@@ -8,7 +8,7 @@ qr_scan(image, flop = T, lighten = F, darken = T, plot = F,
   force_js = F, no_js = F, verbose = interactive())
 }
 \arguments{
-\item{image}{A path to a \code{magick}-readable file, e.g. jpg or png, or a \code{magick} object.}
+\item{image}{A path to a \pkg{magick}-readable file, e.g. jpg or png, or a \pkg{magick} object.}
 
 \item{flop}{Logical. Should the image be mirrored L-R before reading?}
 
@@ -28,7 +28,7 @@ qr_scan(image, flop = T, lighten = F, darken = T, plot = F,
 A list of dataframes, \strong{values} and \strong{points}, each with a column \strong{id}.
 }
 \description{
-\code{qr_scan} reads in an image file or \code{magick} image object and first
+\code{qr_scan} reads in an image file or \pkg{magick} image object and first
 tries to read it using the C++ engine, which is fast and robust at locating
 the alignment patterns. However, it is less robust at decoding. If no codes
 can be read, the image and corners are passed to the JS engine, which is

@@ -8,7 +8,7 @@
 #' 
 #' @keywords internal
 #' 
-#' @param mgk       A magick image object.
+#' @param mgk       A \pkg{magick} image object.
 #' @param type      Type of thresholding, either black or white.
 #' @param threshold Pixel intensity threshold.
 #' @param ...       Additional arguments passed through (\code{channels}).

@@ -2,7 +2,7 @@
 % Please edit documentation in R/qr_scan.R
 \name{qr_plot}
 \alias{qr_plot}
-\title{Plot a \code{magick} image with any detected QR codes.}
+\title{Plot a \pkg{magick} image with any detected QR codes.}
 \usage{
 qr_plot(mgk, code_obj)
 }

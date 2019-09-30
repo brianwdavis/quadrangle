@@ -1,6 +1,6 @@
 #' Scan a file or image for QR codes.
 #' 
-#' \code{qr_scan} reads in an image file or \code{magick} image object and first
+#' \code{qr_scan} reads in an image file or \pkg{magick} image object and first
 #' tries to read it using the C++ engine, which is fast and robust at locating
 #' the alignment patterns. However, it is less robust at decoding. If no codes
 #' can be read, the image and corners are passed to the JS engine, which is
@@ -23,7 +23,7 @@
 #' "Square:n")} (varying \code{n} from 2 to 10) may repair corrupted QR blocks.
 #' 
 #' 
-#' @param image A path to a \code{magick}-readable file, e.g. jpg or png, or a \code{magick} object.
+#' @param image A path to a \pkg{magick}-readable file, e.g. jpg or png, or a \pkg{magick} object.
 #' @param flop  Logical. Should the image be mirrored L-R before reading?
 #' @param lighten Logical. Should under-exposed areas of the image be lightened to increase contrast? Useful for images in shadow. Default \code{FALSE}.
 #' @param darken Logical. Should over-exposed areas of the image be darkened to increase contrast? Useful for images in bright light. Default \code{TRUE}.
@@ -70,7 +70,7 @@ qr_scan <- function(image, flop = T, lighten = F, darken = T, plot = F, force_js
 }
 
 
-#' Plot a \code{magick} image with any detected QR codes.
+#' Plot a \pkg{magick} image with any detected QR codes.
 #' 
 #' \code{qr_plot} is a helper called inside \code{qr_scan} to visualize images
 #' and any QR codes. Requires \code{ggplot2}.
@@ -87,6 +87,13 @@ qr_plot <- function(mgk, code_obj) {
   # dat <- full_join(code_obj$values, code_obj$points, by = "id")
   dat <- merge(code_obj$values, code_obj$points, by = "id")
   
+  # slow to resize large images, but slow to render them as well, how to fix?
+  if (image_info(mgk)$width > 1000) {
+    mgk <- image_resize(mgk, "50%")
+    dat$x <- dat$x/2
+    dat$y <- dat$y/2
+  }  
+  
   if (nrow(dat) > 0) {
     centers <- aggregate(
       cbind(x, y) ~ value+id,
@@ -100,13 +107,6 @@ qr_plot <- function(mgk, code_obj) {
     #   summarise_at(vars(x, y), list(mean))
   } else {
     centers <- dat
-  }
-  
-  # slow to resize large images, but slow to render them as well, how to fix?
-  if (image_info(mgk)$width > 1000) {
-    mgk <- image_resize(mgk, "50%")
-    dat$x <- dat$x/2
-    dat$y <- dat$y/2
   }
   
   image_ggplot(mgk) +

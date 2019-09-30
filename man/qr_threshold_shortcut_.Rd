@@ -7,7 +7,7 @@
 qr_threshold_shortcut_(mgk, type, threshold, ...)
 }
 \arguments{
-\item{mgk}{A magick image object.}
+\item{mgk}{A \pkg{magick} image object.}
 
 \item{type}{Type of thresholding, either black or white.}
 

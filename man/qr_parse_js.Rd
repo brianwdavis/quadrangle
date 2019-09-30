@@ -15,5 +15,5 @@ If not empty, a list with two dataframe elements, \strong{values} and \strong{po
 \description{
 This function is usually only called by \code{\link{qr_scan}}, to combine multiple
 objects returned by \code{\link{qr_scan_js_from_corners}} into a single dataframe,
-analogous to the output from \code{rcpp_qr_scan_array} or \code{qr_scan_cpp_*}.
+analogous to the output from \code{rcpp_qr_scan_array} or \code{\link{qr_scan_cpp}}.
 }
