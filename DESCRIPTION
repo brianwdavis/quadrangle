@@ -19,7 +19,6 @@ Depends:
     Rcpp (>= 1.0.0), 
     V8, 
     purrr, 
-    dplyr, 
     magick
 Imports:
     glue,

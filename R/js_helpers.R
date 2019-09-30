@@ -87,7 +87,7 @@ qr_scan_js_array <- function(arr, engine = NULL) {
   if (!is.null(y)) {
     y$location <- y$location %>% 
       map(~as.data.frame(.x, stringsAsFactors = F)) %>% 
-      bind_rows(.id = "corner")
+      qr_rbind_(.id = "corner")
   }
   return(y)
 }  

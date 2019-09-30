@@ -127,15 +127,15 @@ qr_parse_js <- function(lst) {
   result <- list()
   
   result$values <- 
-    map(lst, "chunks") %>% 
-    bind_rows(.id = "id") 
+    map(lst, "chunks")  %>% 
+    qr_rbind_(.id = "id") 
   result$values$bytes <- NULL
   
   names(result$values) <- c("id", "type", "value")[seq_along(names(result$values))]
 
   result$points <- 
     map(lst, "location") %>% 
-    bind_rows(.id = "id")
+    qr_rbind_(.id = "id") 
   
   result
 }
