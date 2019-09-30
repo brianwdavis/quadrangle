@@ -11,7 +11,10 @@
 #' pixels to pure white. This algorithm was developed for identifying QR codes
 #' on white printed sheets in outdoor images, in bright sun with or without
 #' shadows. To speed up scanning, you can use arguments \code{lighten = F,
-#' darken = F} which will skip any thresholding.
+#' darken = F} which will skip any thresholding. If you use both \code{lighten = T, darken = T},
+#' scanning may be quite slow until a decodable QR code is found. In those cases,
+#' a progress bar will attempt to be shown, if you have the \pkg{progress}
+#' package (\url{https://github.com/r-lib/progress}) available on your machine.
 #'
 #' To BYO algorithm, you can use this function as a template. For example,
 #' \code{\link{image_morphology}} with \code{(..., morphology = "Open", kernel =

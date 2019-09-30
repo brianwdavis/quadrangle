@@ -13,7 +13,10 @@
 #' pure white. This algorithm was developed for identifying QR codes on white
 #' printed sheets in outdoor images, in bright sun with or without shadows. To
 #' speed up scanning, you can use arguments \code{lighten = F, darken = F} which
-#' will skip any thresholding.
+#' will skip any thresholding. If you use both \code{lighten = T, darken = T},
+#' scanning may be quite slow until a decodable QR code is found. In those cases,
+#' a progress bar will attempt to be shown, if you have the \pkg{progress}
+#' package (\url{https://github.com/r-lib/progress}) available on your machine.
 #' 
 #' To BYO algorithm, you can use those two functions as templates. For example,
 #' \code{\link{image_morphology}} with \code{(..., morphology = "Open", kernel =
@@ -80,7 +83,24 @@ qr_plot <- function(mgk, code_obj) {
     stop("Plotting decoded QR images requires ggplot2.")
   }
   
-  dat <- full_join(code_obj$values, code_obj$points, by = "id")
+  # TODO removing dplyr
+  # dat <- full_join(code_obj$values, code_obj$points, by = "id")
+  dat <- merge(code_obj$values, code_obj$points, by = "id")
+  
+  if (nrow(dat) > 0) {
+    centers <- aggregate(
+      cbind(x, y) ~ value+id,
+      data = dat,
+      FUN = mean
+    )
+    
+    # TODO removing dplyr
+    # dat %>%
+    #   group_by(id, value) %>%
+    #   summarise_at(vars(x, y), list(mean))
+  } else {
+    centers <- dat
+  }
   
   # slow to resize large images, but slow to render them as well, how to fix?
   if (image_info(mgk)$width > 1000) {
@@ -96,9 +116,7 @@ qr_plot <- function(mgk, code_obj) {
       show.legend = F, size = 4
     ) +
     ggplot2::geom_label(
-      data = dat %>%
-        group_by(id, value) %>%
-        summarise_at(vars(x, y), list(mean)),
+      data = centers,
       ggplot2::aes(x, y, label = value),
       fontface = "bold"
     )
