@@ -82,10 +82,8 @@ qr_plot <- function(mgk, code_obj) {
   if (!requireNamespace("ggplot2", quietly = T)) {
     stop("Plotting decoded QR images requires ggplot2.")
   }
-  
-  # TODO removing dplyr
-  # dat <- full_join(code_obj$values, code_obj$points, by = "id")
-  dat <- merge(code_obj$values, code_obj$points, by = "id")
+
+  dat <- merge(code_obj$values, code_obj$points, all = T)
   
   # slow to resize large images, but slow to render them as well, how to fix?
   if (image_info(mgk)$width > 1000) {
@@ -94,30 +92,26 @@ qr_plot <- function(mgk, code_obj) {
     dat$y <- dat$y/2
   }  
   
-  if (nrow(dat) > 0) {
+  if (nrow(dat) == 0) {
+    image_ggplot(mgk)
+  } else {
     centers <- aggregate(
       cbind(x, y) ~ value+id,
       data = dat,
       FUN = mean
     )
     
-    # TODO removing dplyr
-    # dat %>%
-    #   group_by(id, value) %>%
-    #   summarise_at(vars(x, y), list(mean))
-  } else {
-    centers <- dat
+    image_ggplot(mgk) +
+      ggplot2::geom_point(
+        data = dat,
+        ggplot2::aes(x, y, color = as.character(id)),
+        show.legend = F, size = 4
+      ) +
+      ggplot2::geom_label(
+        data = centers,
+        ggplot2::aes(x, y, label = value),
+        fontface = "bold"
+      )
   }
   
-  image_ggplot(mgk) +
-    ggplot2::geom_point(
-      data = dat,
-      ggplot2::aes(x, y, color = as.character(id)),
-      show.legend = F, size = 4
-    ) +
-    ggplot2::geom_label(
-      data = centers,
-      ggplot2::aes(x, y, label = value),
-      fontface = "bold"
-    )
 }

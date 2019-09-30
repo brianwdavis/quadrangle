@@ -85,7 +85,9 @@ qr_scan_js_array <- function(arr, engine = NULL) {
   
   y <- engine$call("jsQR", img_d, img_w, img_h, list(inversionAttempts = "dontInvert"))
   if (!is.null(y)) {
-    y$location <- y$location %>% map(as_tibble) %>% bind_rows(.id = "corner")
+    y$location <- y$location %>% 
+      map(~as.data.frame(.x, stringsAsFactors = F)) %>% 
+      bind_rows(.id = "corner")
   }
   return(y)
 }  
