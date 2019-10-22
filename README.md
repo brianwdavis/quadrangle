@@ -122,3 +122,9 @@ qr_scan("generation_original.png", flop = F, plot = T)
 ![annotated image of a base R graph with a QR matrix](inst/generation_decoded.png)
 
 In addition to the method above, `grid::rasterGrob(<qr_matrix>, interpolate = F)` can be useful for arranging additional text on a page, so that you can include human-readable metadata as well. Note that depending on the graphics method you use to render the QR code, the matrix may be flipped or color-inverted. I recommend running a test under the lighting conditions you expect "in the wild" before you deploy a lot of them.
+
+## Demo in the browser:
+
+While this would be a remarkably slow way to detect QR codes from a mobile device, 
+you can try it out using the Shiny app found in the [inst/shiny](inst/shiny) folder
+of this repository and deploying it to a server.

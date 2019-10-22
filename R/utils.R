@@ -40,7 +40,9 @@ qr_pb_ <- function(prefix, n) {
   if (all(flag, na.rm = T)) { 
     pb <- progress::progress_bar$new(
       total = n + 1,
-      format = glue::glue("[{prefix}] Lighten :l Darken :d [:bar] :percent :eta")
+      format = glue::glue("[{prefix}] Lighten :l Darken :d [:bar] :percent :eta"),
+      clear = F,
+      show_after = 0
     )
     pb$tick(tokens = list(l = "    ", d = "  "))
   } else {
