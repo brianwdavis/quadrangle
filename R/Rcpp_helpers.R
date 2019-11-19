@@ -25,7 +25,7 @@
 #' @param debug Logical. Should additional metadata about decoded QR patterns be included? e.g. ECC level, version number, etc.
 #' @param verbose Logical. Should warnings print for potentially slow operations?
 #' @return A list of two dataframes, "values" and "points" describing any found QR codes.
-qr_scan_cpp <- function(image, flop = T, lighten = F, darken = T, debug = F, verbose = interactive()) {
+qr_scan_cpp <- function(image, flop = F, lighten = F, darken = T, debug = F, verbose = interactive()) {
   if (is.character(image)) {
     mgk <- image_read(image)
   } else if ("magick-image" %in% class(image)) {

@@ -32,7 +32,7 @@
 #' @param no_js Logical. Never use the JS library, even if no QR codes are decoded.
 #' @param verbose Logical. Should warnings print for potentially slow operations?
 #' @return A list of dataframes, \strong{values} and \strong{points}, each with a column \strong{id}. 
-qr_scan <- function(image, flop = T, lighten = F, darken = T, plot = F, force_js = F, no_js = F, verbose = interactive()) {
+qr_scan <- function(image, flop = F, lighten = F, darken = T, plot = F, force_js = F, no_js = F, verbose = interactive()) {
   if (is.character(image)) {
     mgk <- image_read(image)
   } else if ("magick-image" %in% class(image)) {
@@ -58,7 +58,7 @@ qr_scan <- function(image, flop = T, lighten = F, darken = T, plot = F, force_js
           code_list, 
           ~qr_scan_js_from_corners(mgk, .x, lighten = lighten, darken = darken, verbose = F)
           ) %>% 
-        qr_parse_js()
+        qr_parse_js_()
     }
   } 
   
@@ -66,6 +66,7 @@ qr_scan <- function(image, flop = T, lighten = F, darken = T, plot = F, force_js
     print(qr_plot(mgk, code_obj))
   }
   
+  cat("\n")
   return(code_obj)
 }
 

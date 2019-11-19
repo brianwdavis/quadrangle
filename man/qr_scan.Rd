@@ -4,7 +4,7 @@
 \alias{qr_scan}
 \title{Scan a file or image for QR codes.}
 \usage{
-qr_scan(image, flop = T, lighten = F, darken = T, plot = F,
+qr_scan(image, flop = F, lighten = F, darken = T, plot = F,
   force_js = F, no_js = F, verbose = interactive())
 }
 \arguments{

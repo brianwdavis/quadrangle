@@ -1,54 +1,72 @@
-# TODO add to options()
-# TODO add updating mechanism
-# https://github.com/cozmo/jsQR/raw/master/dist/jsQR.js
-qr_js_src_path <- system.file("js/jsQR.js", package = "quadrangle")
+.onLoad <- function(libname, pkgname) {
+  if (is.null(getOption("quadrangle.js_src"))) {
+    path <- list("quadrangle.js_src" = qr_js_src_path_())
+    options(path)
+  }
+  
+  invisible()
+}
+
+#' Get the included JS source for \code{jsQR}.
+#' 
+#' @keywords internal
+#' 
+#' @return The path to the included version of the \code{jsQR} library.
+qr_js_src_path_ <- function() {system.file("js/jsQR.js", package = "quadrangle")}
+
+
+#' Update the JS source for \code{jsQR} from the upstream repo.
+#' 
+#' Changes the \code{\link{options}} setting to a new version of the JS source code,
+#' as determined from the canonical repository on GitHub. If you wish to modify
+#' the JS source yourself or download from another URL, you can instead call
+#' \code{options(list("quadrangle.js_src" = your_local_file_path))}
+#' 
+#' @param local_path The working folder to save the new version of the \code{jsQR} library.
+#' @param reset Reverts to the included version if problems arise.
+#' @return The path to a new version of the jsQR library.
+qr_js_src_update <- function(local_path = getwd(), reset = F) {
+  if (reset) {
+    options(list("quadrangle.js_src" = qr_js_src_path_()))
+  } else {
+    pkg <- jsonlite::read_json(
+      "https://github.com/cozmo/jsQR/raw/master/package.json"
+      )
+    
+    dest <- normalizePath(
+      glue::glue("{local_path}/jsQR_{pkg$version}.js"),
+      mustWork = F
+      )
+    
+    download.file(
+      url = "https://github.com/cozmo/jsQR/raw/master/dist/jsQR.js",
+      destfile = dest
+      )
+    
+    options(list("quadrangle.js_src" = dest))
+  }
+
+  return(getOption("quadrangle.js_src"))
+}
 
 #' Initialize a JS engine for QR scanning.
 #' 
-#' @param  qr_js_src The path to the JS file that contains the \code{jsQR} library.
 #' @return A V8 context that can be used inside a function, or assigned to the global environment.
-qr_v8_init <- function(qr_js_src = qr_js_src_path) {
+qr_v8_init <- function() {
   eng <- v8()
-  eng$source(qr_js_src)
+  
+  op_path <- getOption("quadrangle.js_src")
+  
+  if (file.exists(op_path)) {
+    path <- op_path
+  } else {
+    path <- qr_js_src_path_()
+  }
+  
+  eng$source(path)
   return(eng)
 }
 
-#' Identify a JS engine and test it.
-#' 
-#' If a \pkg{V8} engine isn't specified when running \code{\link{qr_scan_js_array}}, this
-#' function will be called to search the global environment. If it finds a V8 
-#' context, it will then test if it contains the \code{jsQR} library and return
-#' it. If not, it will initialize a new one with \code{\link{qr_v8_init}} and return it.
-#' 
-#' @param env Which environment to search for engines? (Usually global.)
-#' @param qr_js_src Path to the \code{jsQR} library source.
-#' @return A prepared \code{\link{v8}} context.
-qr_v8_ls <- function(env = .GlobalEnv, qr_js_src = qr_js_src_path) {
-  envs <- ls.str(mode = "environment", envir = env)
-  
-  is_V8 <- function(nm) {
-    if ("V8" %in% class(get(nm))) {
-      return(nm)
-    } else return(NULL)
-  }
-  
-  is_jsQR <- function(nm) {
-    eng <- get(nm)
-    if ("jsQR" %in% eng$get("Object.keys(this)")) {
-      nm
-    } else return(NULL)
-  }
-  
-  eng_list <- envs %>% map(is_V8) %>% compact() %>% map(is_jsQR) %>% compact()
-  
-  if (length(eng_list) == 0) {
-    eng <- qr_v8_init(qr_js_src)
-  } else {
-    eng <- get(sample(unlist(eng_list), 1))
-  }
-  
-  return(eng)
-}
 
 #' Scan a pixel array for QR codes with the JS engine.
 #' 
@@ -63,7 +81,7 @@ qr_v8_ls <- function(env = .GlobalEnv, qr_js_src = qr_js_src_path) {
 #' @return A list with metadata about any identified QR code.
 qr_scan_js_array <- function(arr, engine = NULL) {
   if (is.null(engine)) {
-    engine <- qr_v8_ls()
+    engine <- qr_v8_init()
   }
   
   if (!identical(dim(arr)[1], 4L)) {

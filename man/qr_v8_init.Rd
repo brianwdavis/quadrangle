@@ -4,10 +4,7 @@
 \alias{qr_v8_init}
 \title{Initialize a JS engine for QR scanning.}
 \usage{
-qr_v8_init(qr_js_src = qr_js_src_path)
-}
-\arguments{
-\item{qr_js_src}{The path to the JS file that contains the \code{jsQR} library.}
+qr_v8_init()
 }
 \value{
 A V8 context that can be used inside a function, or assigned to the global environment.
