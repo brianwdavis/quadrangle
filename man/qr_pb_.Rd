@@ -14,7 +14,6 @@ qr_pb_(prefix, n)
 \description{
 This is an internal function used by \code{\link{qr_scan_js_from_corners}}
 and \code{\link{qr_scan_cpp}}. It's a wrapper around \code{\link[progress]{progress_bar}}.
-If I was smarter, I'd probably put something into \code{\link{options}} on 
-loading \code{quadrangle}, so the user could disable this if they wanted to.
+Can be disabled with \code{options(list(progress_enabled = F))}.
 }
 \keyword{internal}

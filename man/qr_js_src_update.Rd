@@ -4,7 +4,7 @@
 \alias{qr_js_src_update}
 \title{Update the JS source for \code{jsQR} from the upstream repo.}
 \usage{
-qr_js_src_update(local_path = getwd(), reset = F)
+qr_js_src_update(local_path = getwd(), reset = FALSE)
 }
 \arguments{
 \item{local_path}{The working folder to save the new version of the \code{jsQR} library.}
