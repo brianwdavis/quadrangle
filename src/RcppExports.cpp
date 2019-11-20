@@ -19,3 +19,13 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+
+static const R_CallMethodDef CallEntries[] = {
+    {"_quadrangle_rcpp_qr_scan_array", (DL_FUNC) &_quadrangle_rcpp_qr_scan_array, 4},
+    {NULL, NULL, 0}
+};
+
+RcppExport void R_init_quadrangle(DllInfo *dll) {
+    R_registerRoutines(dll, NULL, CallEntries, NULL, NULL);
+    R_useDynamicSymbols(dll, FALSE);
+}
