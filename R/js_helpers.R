@@ -25,7 +25,7 @@ qr_js_src_path_ <- function() {system.file("js/jsQR.js", package = "quadrangle")
 #' @param local_path The working folder to save the new version of the \code{jsQR} library.
 #' @param reset Reverts to the included version if problems arise.
 #' @return The path to a new version of the jsQR library.
-qr_js_src_update <- function(local_path = getwd(), reset = F) {
+qr_js_src_update <- function(local_path = getwd(), reset = FALSE) {
   if (reset) {
     options(list("quadrangle.js_src" = qr_js_src_path_()))
   } else {
@@ -35,7 +35,7 @@ qr_js_src_update <- function(local_path = getwd(), reset = F) {
     
     dest <- normalizePath(
       glue::glue("{local_path}/jsQR_{pkg$version}.js"),
-      mustWork = F
+      mustWork = FALSE
       )
     
     utils::download.file(
@@ -98,8 +98,8 @@ qr_scan_js_array <- function(arr, engine = NULL) {
   vec = as.integer(vec)
   
   img_d <- V8::JS(glue::glue("Uint8ClampedArray.from({jsonlite::toJSON(vec)})"))
-  img_w <- V8::JS(jsonlite::toJSON(dim(arr)[2], auto_unbox = T))
-  img_h <- V8::JS(jsonlite::toJSON(dim(arr)[3], auto_unbox = T))
+  img_w <- V8::JS(jsonlite::toJSON(dim(arr)[2], auto_unbox = TRUE))
+  img_h <- V8::JS(jsonlite::toJSON(dim(arr)[3], auto_unbox = TRUE))
   
   y <- engine$call("jsQR", img_d, img_w, img_h, list(inversionAttempts = "dontInvert"))
   if (!is.null(y)) {

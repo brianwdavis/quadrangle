@@ -26,7 +26,13 @@
 #' @param darken Logical. Should over-exposed areas of the image be darkened to increase contrast? Useful for images in bright light. Default \code{TRUE}.
 #' @param verbose Logical. Should warnings print for potentially slow operations?
 #' @return If decodable, a list with metadata about the identified QR code.
-qr_scan_js_from_corners <- function(mgk, code_pts, lighten = F, darken = T, verbose = interactive()) {
+qr_scan_js_from_corners <- function(
+  mgk, 
+  code_pts, 
+  lighten = FALSE, 
+  darken = TRUE, 
+  verbose = interactive()
+  ) {
   
   parsedcorners <- qr_parse_corners_(mgk, code_pts)
   mgk <- parsedcorners$mgk
@@ -42,7 +48,7 @@ qr_scan_js_from_corners <- function(mgk, code_pts, lighten = F, darken = T, verb
   if (lighten && darken && verbose) {
     warning(
       "Cleaning up both over-exposed and under-exposed areas may be slow.",
-      immediate. = T, call. = F
+      immediate. = TRUE, call. = FALSE
       )
   }
   
@@ -91,7 +97,7 @@ qr_parse_corners_ <- function(mgk, code_pts) {
     sapply(
       c("mgk", "anc_x", "anc_y", "resize_flag"), 
       function(x) FALSE,
-      simplify = F
+      simplify = FALSE
       )
   
   if (nrow(code_pts) != 0) {
