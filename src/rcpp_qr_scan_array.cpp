@@ -3,7 +3,14 @@
 
 using namespace Rcpp;
 
-
+//' Scan a grayscale array using the quirc C++ engine
+//' 
+//' Should only be called from quadrangle::qr_scan_cpp in R
+//' 
+//' @param grayarray Vector of grayscale pixel values
+//' @param w Width of pixel array
+//' @param h Height of pixel array
+//' @param debug Return additional info about found QR codes (ECC level, version, etc)
 // [[Rcpp::export]]
 List rcpp_qr_scan_array(RawVector grayarray, int w, int h, bool debug = false) {
   

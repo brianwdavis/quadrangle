@@ -21,3 +21,7 @@
 #' @docType package
 #' @name quadrangle
 NULL
+
+# Per Jenny Bryan's suggestions where the . pronoun is used (but I used vars in qr_plot)
+# "Undefined global functions or variables" in R CMD check
+if (getRversion() >= "2.15.1")  utils::globalVariables(c("id", "value", "x", "y"))

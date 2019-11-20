@@ -34,7 +34,7 @@
 #' @return A list of dataframes, \strong{values} and \strong{points}, each with a column \strong{id}. 
 qr_scan <- function(image, flop = F, lighten = F, darken = T, plot = F, force_js = F, no_js = F, verbose = interactive()) {
   if (is.character(image)) {
-    mgk <- image_read(image)
+    mgk <- magick::image_read(image)
   } else if ("magick-image" %in% class(image)) {
     mgk <- image
   } else {
@@ -42,7 +42,7 @@ qr_scan <- function(image, flop = F, lighten = F, darken = T, plot = F, force_js
   }
   
   if (flop) {
-    mgk <- image_flop(mgk)
+    mgk <- magick::image_flop(mgk)
   }
   
   code_obj <- qr_scan_cpp(mgk, flop = F, lighten = lighten, darken = darken, verbose = verbose)
@@ -54,7 +54,7 @@ qr_scan <- function(image, flop = F, lighten = F, darken = T, plot = F, force_js
     if (!no_js) {
       code_list <- split(code_pts, code_pts$id)
       code_obj <- 
-        map(
+        purrr::map(
           code_list, 
           ~qr_scan_js_from_corners(mgk, .x, lighten = lighten, darken = darken, verbose = F)
           ) %>% 
@@ -87,22 +87,22 @@ qr_plot <- function(mgk, code_obj) {
   dat <- merge(code_obj$values, code_obj$points, all = T)
   
   # slow to resize large images, but slow to render them as well, how to fix?
-  if (image_info(mgk)$width > 1000) {
-    mgk <- image_resize(mgk, "50%")
+  if (magick::image_info(mgk)$width > 1000) {
+    mgk <- magick::image_resize(mgk, "50%")
     dat$x <- dat$x/2
     dat$y <- dat$y/2
   }  
   
   if (nrow(dat) == 0) {
-    image_ggplot(mgk)
+    magick::image_ggplot(mgk)
   } else {
-    centers <- aggregate(
+    centers <- stats::aggregate(
       cbind(x, y) ~ value+id,
       data = dat,
       FUN = mean
     )
     
-    image_ggplot(mgk) +
+    magick::image_ggplot(mgk) +
       ggplot2::geom_point(
         data = dat,
         ggplot2::aes(x, y, color = as.character(id)),

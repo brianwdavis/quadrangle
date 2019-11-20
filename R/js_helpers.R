@@ -38,7 +38,7 @@ qr_js_src_update <- function(local_path = getwd(), reset = F) {
       mustWork = F
       )
     
-    download.file(
+    utils::download.file(
       url = "https://github.com/cozmo/jsQR/raw/master/dist/jsQR.js",
       destfile = dest
       )
@@ -53,7 +53,7 @@ qr_js_src_update <- function(local_path = getwd(), reset = F) {
 #' 
 #' @return A V8 context that can be used inside a function, or assigned to the global environment.
 qr_v8_init <- function() {
-  eng <- v8()
+  eng <- V8::v8()
   
   op_path <- getOption("quadrangle.js_src")
   
@@ -97,14 +97,14 @@ qr_scan_js_array <- function(arr, engine = NULL) {
   
   vec = as.integer(vec)
   
-  img_d <- JS(glue::glue("Uint8ClampedArray.from({jsonlite::toJSON(vec)})"))
-  img_w <- JS(jsonlite::toJSON(dim(arr)[2], auto_unbox = T))
-  img_h <- JS(jsonlite::toJSON(dim(arr)[3], auto_unbox = T))
+  img_d <- V8::JS(glue::glue("Uint8ClampedArray.from({jsonlite::toJSON(vec)})"))
+  img_w <- V8::JS(jsonlite::toJSON(dim(arr)[2], auto_unbox = T))
+  img_h <- V8::JS(jsonlite::toJSON(dim(arr)[3], auto_unbox = T))
   
   y <- engine$call("jsQR", img_d, img_w, img_h, list(inversionAttempts = "dontInvert"))
   if (!is.null(y)) {
     y$location <- y$location %>% 
-      map(~as.data.frame(.x, stringsAsFactors = F)) %>% 
+      purrr::map(~as.data.frame(.x, stringsAsFactors = F)) %>% 
       qr_rbind_(.id = "corner")
   }
   return(y)

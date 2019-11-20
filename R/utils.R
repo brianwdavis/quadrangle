@@ -16,7 +16,7 @@ qr_threshold_shortcut_ <- function(mgk, type, threshold, ...) {
   if ((type == "black" && threshold == "0%") || (type == "white" && threshold == "100%")) {
     mgk
   } else {
-    image_threshold(mgk, type, threshold, ...)
+    magick::image_threshold(mgk, type, threshold, ...)
   }
 }
 
@@ -62,10 +62,11 @@ qr_pb_ <- function(prefix, n) {
 #' @param df_list  A list of dataframes.
 #' @param .id      The name of the prepended ID column.
 qr_rbind_ <- function(df_list, .id = "id") {
-  bound <- compact(df_list) %>% 
-    keep(~nrow(.) > 0) %>% 
-    imap(~cbind(.id = .y, .x)) %>% 
-    {do.call("rbind", .)}
+  bound_list <- purrr::compact(df_list) %>% 
+    purrr::keep(~nrow(.) > 0) %>% 
+    purrr::imap(~cbind(.id = .y, .x))
+  
+  bound <- do.call("rbind", bound_list)
   
   if (is.null(bound)) {
     bound <- data.frame()
@@ -76,3 +77,10 @@ qr_rbind_ <- function(df_list, .id = "id") {
   
   bound
 }
+
+#' Pipe operator
+#' 
+#' @name %>% 
+#' @rdname pipe
+#' @keywords internal
+magick::`%>%`

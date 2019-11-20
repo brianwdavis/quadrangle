@@ -27,7 +27,7 @@
 #' @return A list of two dataframes, "values" and "points" describing any found QR codes.
 qr_scan_cpp <- function(image, flop = F, lighten = F, darken = T, debug = F, verbose = interactive()) {
   if (is.character(image)) {
-    mgk <- image_read(image)
+    mgk <- magick::image_read(image)
   } else if ("magick-image" %in% class(image)) {
     mgk <- image
   } else {
@@ -43,7 +43,7 @@ qr_scan_cpp <- function(image, flop = F, lighten = F, darken = T, debug = F, ver
   candidate_points <- data.frame()
   
   if (flop) {
-    mgk <- image_flop(mgk)
+    mgk <- magick::image_flop(mgk)
   }
   
   if (!lighten) thr_w <- thr_w[1]
@@ -73,7 +73,7 @@ qr_scan_cpp <- function(image, flop = F, lighten = F, darken = T, debug = F, ver
       
       
       arr <- qr_threshold_shortcut_(mgk, "black", thr_b[i]) %>%
-        image_data(channels = "gray")
+        magick::image_data(channels = "gray")
       
       codes <- rcpp_qr_scan_array(
         as.vector(arr, mode = "raw"),

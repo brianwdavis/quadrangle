@@ -16,13 +16,13 @@ Description: Reads QR (Quick Response) codes from images. Uses `Rcpp` and `V8`
     decoding). Designed for, but not restricted to, image wrangling using `magick`.
 License: GPL (>= 3)
 Depends: 
-    Rcpp (>= 1.0.0), 
+    Rcpp (>= 1.0.0)
+Imports:
     V8, 
     purrr, 
-    magick
-Imports:
     glue,
-    jsonlite
+    jsonlite, 
+    magick
 Suggests: 
     ggplot2,
     progress

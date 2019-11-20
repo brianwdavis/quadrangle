@@ -1,3 +1,12 @@
 useDynLib(quadrangle, .registration=TRUE)
-exportPattern("^[[:alpha:]_]+$")
+export(qr_scan)
+export(qr_scan_cpp)
+export(qr_scan_js_from_corners)
+export(qr_scan_js_array)
+export(qr_plot)
+export(qr_js_src_update)
+export(qr_v8_init)
+export("%>%")
 importFrom(Rcpp, evalCpp)
+importFrom(magick, "%>%")
+

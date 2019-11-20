@@ -58,7 +58,7 @@ qr_scan_js_from_corners <- function(mgk, code_pts, lighten = F, darken = T, verb
       pb$tick(tokens = list(l = thr_w[j], d = thr_b[i]))
       
       codes <- qr_threshold_shortcut_(mgk, "black", thr_b[i]) %>% 
-        image_data(channels = "rgba") %>% 
+        magick::image_data(channels = "rgba") %>% 
         qr_scan_js_array()
       
     }
@@ -98,17 +98,17 @@ qr_parse_corners_ <- function(mgk, code_pts) {
     ret$anc_x <- max(min(code_pts$x) - 50, 0)
     ret$anc_y <- max(min(code_pts$y) - 50, 0)
     
-    dim_x <- min(diff(range(code_pts$x)) + 100, image_info(mgk)$width-ret$anc_x)
-    dim_y <- min(diff(range(code_pts$y)) + 100, image_info(mgk)$height-ret$anc_y)
+    dim_x <- min(diff(range(code_pts$x)) + 100, magick::image_info(mgk)$width-ret$anc_x)
+    dim_y <- min(diff(range(code_pts$y)) + 100, magick::image_info(mgk)$height-ret$anc_y)
     
     ret$resize_flag <- max(dim_x, dim_y) > 400
     
     geo <- glue::glue("{dim_x}x{dim_y}+{ret$anc_x}+{ret$anc_y}")
     
-    mgk <- image_crop(mgk, geo)
+    mgk <- magick::image_crop(mgk, geo)
     
     if (ret$resize_flag) {
-      mgk <- image_resize(mgk, "50%")
+      mgk <- magick::image_resize(mgk, "50%")
     }
   }
   
@@ -129,14 +129,14 @@ qr_parse_js_ <- function(lst) {
   result <- list()
   
   result$values <- 
-    map(lst, "chunks")  %>% 
+    purrr::map(lst, "chunks")  %>% 
     qr_rbind_(.id = "id") 
   result$values$bytes <- NULL
   
   names(result$values) <- c("id", "type", "value")[seq_along(names(result$values))]
 
   result$points <- 
-    map(lst, "location") %>% 
+    purrr::map(lst, "location") %>% 
     qr_rbind_(.id = "id") 
   
   result
