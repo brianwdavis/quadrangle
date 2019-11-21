@@ -4,8 +4,14 @@
 \alias{qr_scan_cpp}
 \title{Scan an image file or \pkg{magick} image object for QR codes with the C++ engine.}
 \usage{
-qr_scan_cpp(image, flop = F, lighten = F, darken = T, debug = F,
-  verbose = interactive())
+qr_scan_cpp(
+  image,
+  flop = F,
+  lighten = F,
+  darken = T,
+  debug = F,
+  verbose = interactive()
+)
 }
 \arguments{
 \item{image}{A path to a \pkg{magick}-readable file, e.g. jpg or png, or a \pkg{magick} object.}

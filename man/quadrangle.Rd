@@ -3,7 +3,6 @@
 \docType{package}
 \name{quadrangle}
 \alias{quadrangle}
-\alias{quadrangle-package}
 \title{quadrangle: Wrangle QR codes out of images.}
 \description{
 The quadrangle package provides wrappers for two external libraries that read QR codes:

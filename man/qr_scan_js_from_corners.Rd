@@ -4,8 +4,13 @@
 \alias{qr_scan_js_from_corners}
 \title{Scan an image within a restricted geometry context.}
 \usage{
-qr_scan_js_from_corners(mgk, code_pts, lighten = FALSE, darken = TRUE,
-  verbose = interactive())
+qr_scan_js_from_corners(
+  mgk,
+  code_pts,
+  lighten = FALSE,
+  darken = TRUE,
+  verbose = interactive()
+)
 }
 \arguments{
 \item{mgk}{A \pkg{magick} image object.}

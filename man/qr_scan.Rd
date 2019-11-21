@@ -4,9 +4,16 @@
 \alias{qr_scan}
 \title{Scan a file or image for QR codes.}
 \usage{
-qr_scan(image, flop = FALSE, lighten = FALSE, darken = TRUE,
-  plot = FALSE, force_js = FALSE, no_js = FALSE,
-  verbose = interactive())
+qr_scan(
+  image,
+  flop = FALSE,
+  lighten = FALSE,
+  darken = TRUE,
+  plot = FALSE,
+  force_js = FALSE,
+  no_js = FALSE,
+  verbose = interactive()
+)
 }
 \arguments{
 \item{image}{A path to a \pkg{magick}-readable file, e.g. jpg or png, or a \pkg{magick} object.}
