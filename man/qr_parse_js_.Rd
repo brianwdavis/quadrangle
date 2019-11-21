@@ -2,7 +2,7 @@
 % Please edit documentation in R/qr_js.R
 \name{qr_parse_js_}
 \alias{qr_parse_js_}
-\title{Parse multiple QR objects into a single dataframe.}
+\title{Parse multiple QR objects into a single object.}
 \usage{
 qr_parse_js_(lst)
 }
@@ -13,31 +13,8 @@ qr_parse_js_(lst)
 If not empty, a list with two dataframe elements, \strong{values} and \strong{points}, identifying all QR codes from an image.
 }
 \description{
-Parse multiple QR objects into a single dataframe.
+This function is usually only called by \code{\link{qr_scan}}, to combine multiple
+objects returned by \code{\link{qr_scan_js_from_corners}} into a single dataframe,
+analogous to the output from \code{rcpp_qr_scan_array} or \code{\link{qr_scan_cpp}}.
 }
-\keyword{This}
-\keyword{\code{\link{qr_scan_cpp}}.}
-\keyword{\code{\link{qr_scan_js_from_corners}}}
-\keyword{\code{\link{qr_scan}},}
-\keyword{\code{rcpp_qr_scan_array}}
-\keyword{a}
-\keyword{analogous}
-\keyword{by}
-\keyword{called}
-\keyword{combine}
-\keyword{dataframe,}
-\keyword{from}
-\keyword{function}
 \keyword{internal}
-\keyword{into}
-\keyword{is}
-\keyword{multiple}
-\keyword{objects}
-\keyword{only}
-\keyword{or}
-\keyword{output}
-\keyword{returned}
-\keyword{single}
-\keyword{the}
-\keyword{to}
-\keyword{usually}

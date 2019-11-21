@@ -1,6 +1,6 @@
 Package: quadrangle
 Type: Package
-Title: Wrangle QR Codes Out Of Images
+Title: Wrangle QR Codes Out of Images
 Version: 0.1.0
 Date: 2019-09-16
 Authors@R: c(

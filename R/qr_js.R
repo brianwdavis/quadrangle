@@ -122,13 +122,13 @@ qr_parse_corners_ <- function(mgk, code_pts) {
   return(ret)
 }
 
-#' Parse multiple QR objects into a single dataframe.
-#' 
-#' @keywords internal
+#' Parse multiple QR objects into a single object.
 #' 
 #' This function is usually only called by \code{\link{qr_scan}}, to combine multiple
 #' objects returned by \code{\link{qr_scan_js_from_corners}} into a single dataframe,
 #' analogous to the output from \code{rcpp_qr_scan_array} or \code{\link{qr_scan_cpp}}.
+#' 
+#' @keywords internal
 #' @param lst A list returned by \code{\link{qr_scan_js_from_corners}}, with dataframe elements \strong{chunks} and \strong{location}.
 #' @return If not empty, a list with two dataframe elements, \strong{values} and \strong{points}, identifying all QR codes from an image.
 qr_parse_js_ <- function(lst) {
