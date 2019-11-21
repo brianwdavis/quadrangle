@@ -1,7 +1,7 @@
 Package: quadrangle
 Type: Package
 Title: Wrangle QR Codes Out Of Images
-Version: 0.0.0.9020
+Version: 0.1.0
 Date: 2019-09-16
 Authors@R: c(
     person("Brian", "Davis", email = "brianwdavis@gmail.com", role = c("aut", "cre")),
@@ -26,7 +26,8 @@ Imports:
     magick
 Suggests: 
     ggplot2,
-    progress
+    progress,
+    testthat
 LinkingTo: Rcpp
 RoxygenNote: 6.1.1
 Encoding: UTF-8
