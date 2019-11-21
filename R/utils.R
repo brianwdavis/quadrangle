@@ -53,7 +53,7 @@ qr_pb_ <- function(prefix, n) {
 #' (Internal) \code{dplyr::bind_rows} replacement
 #' 
 #' This is an internal function. Since \pkg{dplyr} is a heavy dependency, this
-#' handles the expected use cases in this package. It's inferior to \code{\link[dplyr]{bind_rows}}
+#' handles the expected use cases in this package. It's inferior to \code{dplyr::bind_rows}
 #' in every way, so it should only be used inside this package.
 #' 
 #' @keywords internal

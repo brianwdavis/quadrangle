@@ -43,7 +43,12 @@ qr_js_src_update <- function(local_path = getwd(), reset = FALSE) {
       destfile = dest
       )
     
-    options(list("quadrangle.js_src" = dest))
+    if (file.exists(dest)) {
+      options(list("quadrangle.js_src" = dest))
+    } else {
+      stop("jsQR.js was not successfully downloaded.")
+    }
+    
   }
 
   return(getOption("quadrangle.js_src"))

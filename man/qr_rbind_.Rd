@@ -13,7 +13,7 @@ qr_rbind_(df_list, .id = "id")
 }
 \description{
 This is an internal function. Since \pkg{dplyr} is a heavy dependency, this
-handles the expected use cases in this package. It's inferior to \code{\link[dplyr]{bind_rows}}
+handles the expected use cases in this package. It's inferior to \code{dplyr::bind_rows}
 in every way, so it should only be used inside this package.
 }
 \keyword{internal}
