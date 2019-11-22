@@ -102,7 +102,7 @@ qr_scan_js_array <- function(arr, engine = NULL) {
   
   vec = as.integer(vec)
   
-  img_d <- V8::JS(glue::glue("Uint8ClampedArray.from({jsonlite::toJSON(vec)})"))
+  img_d <- V8::JS(glue::glue("new Uint8ClampedArray({jsonlite::toJSON(vec)})"))
   img_w <- V8::JS(jsonlite::toJSON(dim(arr)[2], auto_unbox = TRUE))
   img_h <- V8::JS(jsonlite::toJSON(dim(arr)[3], auto_unbox = TRUE))
   
