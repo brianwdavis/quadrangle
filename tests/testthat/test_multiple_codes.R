@@ -15,9 +15,9 @@ test_that(
     expect_equal(names(x$points), c("id", "x", "y"))
     expect_equal(nrow(x$values), 3)
     expect_equal(nrow(x$points), 12)
-    expect_equal(
-      sort(x$values$value),
-      c("in a single image", "This is a test", "to detect multiple QR codes")
+    expect_setequal(
+      x$values$value,
+      c("This is a test", "to detect multiple QR codes", "in a single image")
     )
   }
 )
@@ -37,9 +37,9 @@ test_that(
     expect_equal(names(x$points), c("id", "corner", "x", "y"))
     expect_equal(nrow(x$values), 3)
     expect_equal(nrow(x$points), 24)
-    expect_equal(
-      sort(x$values$value),
-      c("in a single image", "This is a test", "to detect multiple QR codes")
+    expect_setequal(
+      x$values$value,
+      c("This is a test", "to detect multiple QR codes", "in a single image")
     )
   }
 )
