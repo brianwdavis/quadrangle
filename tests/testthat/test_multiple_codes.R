@@ -4,7 +4,7 @@ test_that(
   "An image with 3 QR codes detects it with C++",
   {
     x <- system.file("multiple_original.png", package = "quadrangle") %>% 
-      qr_scan()
+      qr_scan(no_js = TRUE)
     expect_equal(length(x), 2)
     expect_equal(
       unlist(lapply(x, class), use.names = FALSE), 
@@ -25,6 +25,7 @@ test_that(
 test_that(
   "An image with 3 QR codes detects it with JS",
   {
+    skip_if_not(qr_v8_checker_())
     x <- system.file("multiple_original.png", package = "quadrangle") %>% 
       qr_scan(force_js = TRUE)
     expect_equal(length(x), 2)

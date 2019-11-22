@@ -22,8 +22,9 @@ test_that(
 test_that(
   "Flipped image is detected and read with JS",
   {
+    skip_if_not(qr_v8_checker_())
     x <- system.file("test_original.jpg", package = "quadrangle") %>% 
-      qr_scan(flop = FALSE, no_js = FALSE)
+      qr_scan(flop = FALSE, force_js = TRUE)
     expect_equal(length(x), 2)
     expect_equal(
       unlist(lapply(x, class), use.names = FALSE), 

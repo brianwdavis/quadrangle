@@ -60,7 +60,7 @@ qr_scan <- function(
   # TODO image_destroy(mgk)
   
   if (isTRUE(nrow(code_pts) > 0) && any(code_obj$values$value == "") || force_js) {
-    if (!no_js) {
+    if (!no_js && qr_v8_checker_()) {
       code_list <- split(code_pts, code_pts$id)
       code_obj <- 
         purrr::map(

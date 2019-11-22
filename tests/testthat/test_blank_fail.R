@@ -1,9 +1,9 @@
 context("Graceful failure")
 
 test_that(
-  "A blank image produces a named list with two dfs of zero rows with named cols",
+  "A blank image produces a named list with two dfs of zero rows with named cols without JS",
   {
-    x <- qr_scan(magick::image_blank(5,5, "green"))
+    x <- qr_scan(magick::image_blank(5,5, "green"), no_js = TRUE)
     expect_equal(length(x), 2)
     expect_equal(
       unlist(lapply(x, class), use.names = FALSE), 
@@ -18,9 +18,10 @@ test_that(
 )
 
 test_that(
-  "A blank image produces a named list with two dfs of zero rows and zero cols",
+  "A blank image produces a named list with two dfs of zero rows and zero cols with JS",
   {
-    x <- qr_scan(magick::image_blank(5,5, "green"), force_js = T)
+    skip_if_not(qr_v8_checker_())
+    x <- qr_scan(magick::image_blank(5,5, "green"), force_js = TRUE)
     expect_equal(length(x), 2)
     expect_equal(
       unlist(lapply(x, class), use.names = FALSE), 

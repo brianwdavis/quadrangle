@@ -72,6 +72,30 @@ qr_v8_init <- function() {
   return(eng)
 }
 
+#' Check if the system V8 library is up to date.
+#' 
+#' Older versions of V8 included with Ubuntu/Debian do not support 
+#' \code{Uint8ClampedArray} typed arrays, so JS decoding will be skipped. These
+#' can be updated manually.
+#' 
+#' @keywords internal
+#' 
+#' @return Logical. Compatibility.
+qr_v8_checker_ <- function() {
+  v <- V8::engine_info()$version
+  v1 <- strsplit(v, "\\.")[[1]][1]
+  flag <- as.numeric(v1) >= 6
+  
+  if (!flag) {
+    warning(
+      "You must upgrade your system V8 library to use the JS engine.\n", 
+      glue::glue("Currently using {v}, needs >= 6."),
+      immediate. = TRUE
+      )
+  }
+  
+  return(flag)
+}
 
 #' Scan a pixel array for QR codes with the JS engine.
 #' 
@@ -85,6 +109,10 @@ qr_v8_init <- function() {
 #' @param engine An initialized V8 context, see \code{\link{qr_v8_init}}.
 #' @return A list with metadata about any identified QR code.
 qr_scan_js_array <- function(arr, engine = NULL) {
+  if (!qr_v8_checker_()) {
+    stop("Please see https://github.com/jeroen/V8#debian--ubuntu")
+  }
+  
   if (is.null(engine)) {
     engine <- qr_v8_init()
   }

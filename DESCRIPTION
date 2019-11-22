@@ -1,7 +1,7 @@
 Package: quadrangle
 Type: Package
 Title: Wrangle QR Codes Out of Images
-Version: 0.1.0
+Version: 0.1.1
 Date: 2019-11-21
 Authors@R: c(
     person("Brian W.", "Davis", email = "brianwdavis@gmail.com", role = c("aut", "cre")),
