@@ -8,7 +8,7 @@ Authors@R: c(
     person("Cosmo", "Wolfe", role = "ctb", comment = "jsQR"),
     person("Daniel", "Beer", role = "ctb", comment = "quirc")
     )
-Maintainer: "Brian W. Davis" <brianwdavis@gmail.com>
+Maintainer: Brian W. Davis <brianwdavis@gmail.com>
 URL: https://github.com/brianwdavis/quadrangle
 BugReports: https://github.com/brianwdavis/quadrangle/issues
 Description: Reads QR (Quick Response) codes from images. Uses 'Rcpp' and 'V8' 
