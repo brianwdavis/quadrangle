@@ -54,6 +54,8 @@ qr_scan_js_from_corners <- function(
   
   pb <- qr_pb_("JS", length(thr_w)*length(thr_b))
   
+  engine <- qr_v8_init()
+
   while (length(codes) == 0 & j < length(thr_w)) {
     j <- j+1
     mgk <- qr_threshold_shortcut_(mgk, "white", thr_w[j])
@@ -65,7 +67,7 @@ qr_scan_js_from_corners <- function(
       
       codes <- qr_threshold_shortcut_(mgk, "black", thr_b[i]) %>% 
         magick::image_data(channels = "rgba") %>% 
-        qr_scan_js_array()
+        qr_scan_js_array(engine = engine)
       
     }
   }
