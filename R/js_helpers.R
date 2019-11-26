@@ -115,6 +115,7 @@ qr_scan_js_array <- function(arr, engine = NULL) {
   
   if (is.null(engine)) {
     engine <- qr_v8_init()
+    on.exit(engine$reset())
   }
   
   if (!identical(dim(arr)[1], 4L)) {
