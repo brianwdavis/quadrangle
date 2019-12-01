@@ -38,16 +38,16 @@ qr_js_src_update <- function(local_path = getwd(), reset = FALSE) {
       mustWork = FALSE
       )
     
-    utils::download.file(
+    st <- utils::download.file(
       url = "https://github.com/cozmo/jsQR/raw/master/dist/jsQR.js",
       destfile = dest,
       quiet = !interactive()
       )
     
-    if (file.exists(dest)) {
+    if (file.exists(dest) && st == 0) {
       options(list("quadrangle.js_src" = dest))
     } else {
-      stop("jsQR.js was not successfully downloaded.")
+      stop("jsQR.js was not successfully downloaded. Check your connection and try again.")
     }
     
   }
