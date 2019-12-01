@@ -40,7 +40,8 @@ qr_js_src_update <- function(local_path = getwd(), reset = FALSE) {
     
     utils::download.file(
       url = "https://github.com/cozmo/jsQR/raw/master/dist/jsQR.js",
-      destfile = dest
+      destfile = dest,
+      quiet = !interactive()
       )
     
     if (file.exists(dest)) {
