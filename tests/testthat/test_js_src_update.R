@@ -3,6 +3,7 @@ context("Network needed - Updating JS source and resetting")
 test_that(
   "JS source can be pulled from GitHub",
   {
+    skip_if_not(qr_v8_checker_())
     skip_if_offline()
     skip_on_cran()
     
@@ -27,6 +28,7 @@ test_that(
 test_that(
   "JS source can be reset",
   {
+    skip_if_not(qr_v8_checker_())
     old_src <- qr_js_src_update(reset = TRUE)
     
     expect_true(file.exists(old_src))
