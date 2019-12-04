@@ -20,3 +20,5 @@ test_that(
     expect_equal(x$data, "W ETO C1 T1")
   }
 )
+
+# testthat::test_file("./tests/manual/manual_test_large_images.R")
