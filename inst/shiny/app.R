@@ -4,6 +4,7 @@ if (!requireNamespace("quadrangle")) {
 }
 library(quadrangle)
 library(ggplot2)
+library(magick)
 
 ui <- fluidPage(
   titlePanel(tags$h1(tags$code("{quadrangle}") ," demo"), "{quadrangle} demo"),
