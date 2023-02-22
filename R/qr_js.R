@@ -122,6 +122,25 @@ qr_parse_corners_ <- function(mgk, code_pts) {
   return(ret)
 }
 
+
+#' Set missing text from bytes assuming latin1
+#'
+#' This function is only called by \code{\link{qr_parse_js_}}, to fill missing
+#' text entries from the bytes integer vector.
+#'
+#' @keywords internal
+#' @param lst A list with dataframe element \strong{values}, used in the internal of \code{\link{qr_parse_js_}}.
+#' @return A list with dataframe element \strong{values}.
+set_missing_text_to_latin1_ <- function(lst) {
+  vs <- lst[["values"]]
+  try_latin1_rows <- vs[["type"]] == "byte" & purrr::map_int(vs[["bytes"]], length) > 0 & !nzchar(vs[["text"]])
+  if (all(try_latin1_rows == FALSE)) return(lst)
+  vs[try_latin1_rows, "text"] <- purrr::map_chr(vs[try_latin1_rows, c("bytes")], function(cv) rawToChar(as.raw(cv)))
+  Encoding(vs[try_latin1_rows, "text"]) <- "latin1"
+  lst[["values"]] <- vs
+  return(lst)
+}
+
 #' Parse multiple QR objects into a single object.
 #' 
 #' This function is usually only called by \code{\link{qr_scan}}, to combine multiple
@@ -136,7 +155,10 @@ qr_parse_js_ <- function(lst) {
   
   result$values <- 
     purrr::map(lst, "chunks")  %>% 
-    qr_rbind_(.id = "id") 
+    qr_rbind_(.id = "id")
+
+  result <- set_missing_text_to_latin1_(result)
+
   result$values$bytes <- NULL
   
   names(result$values) <- c("id", "type", "value")[seq_along(names(result$values))]
