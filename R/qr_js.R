@@ -141,6 +141,27 @@ set_missing_text_to_latin1_ <- function(lst) {
   return(lst)
 }
 
+#' Put text column at third position of values dataframe
+#'
+#' This function is only called by \code{\link{qr_parse_js_}}, to put the text
+#' column at the third position of the values dataframe.
+#'
+#' @keywords internal
+#' @param lst A list with dataframe element \strong{values}, used in the internal of \code{\link{qr_parse_js_}}.
+#' @return A list with dataframe element \strong{values}.
+put_text_at_3rd_column_ <- function(lst) {
+  vs <- lst[["values"]]
+  colns <- colnames(vs)
+  position <- which(colns == 'text')
+  if (length(position) != 1L || position == 3L) return(lst)
+  arrange <- seq_along(colns)
+  arrange[[3]] <- position
+  arrange[[position]] <- 3
+  vs <- vs[, arrange]
+  lst[['values']] <- vs
+  return(lst)
+}
+
 #' Parse multiple QR objects into a single object.
 #' 
 #' This function is usually only called by \code{\link{qr_scan}}, to combine multiple
@@ -161,6 +182,8 @@ qr_parse_js_ <- function(lst) {
 
   result$values$bytes <- NULL
   
+  result <- put_text_at_3rd_column_(result)
+
   names(result$values) <- c("id", "type", "value")[seq_along(names(result$values))]
 
   result$points <- 
